@@ -67,12 +67,17 @@
         "id": "diff-viewer",
         "title": "Diff Viewer",
         "entry": "panel/diff-viewer.html"
+      },
+      {
+        "id": "pull-requests",
+        "title": "Pull Requests",
+        "entry": "panel/pull-requests.html"
       }
     ],
     "commands": [
       {
         "id": "toggle-scm",
-        "title": "Git: Toggle Source Control",
+        "title": "Toggle Source Control",
         "defaultShortcut": "cmd+y",
         "action": {
           "kind": "togglePanel",
@@ -81,11 +86,12 @@
       },
       {
         "id": "refresh-scm",
-        "title": "Git: Refresh"
+        "title": "Refresh",
+        "defaultShortcut": ""
       },
       {
         "id": "open-branch",
-        "title": "Git: Switch Branch",
+        "title": "Switch Branch",
         "action": {
           "kind": "openPopover",
           "popover": "branch"
@@ -93,11 +99,18 @@
       },
       {
         "id": "open-pr-info",
-        "title": "Git: Current Pull Request",
-        "defaultShortcut": "cmd+shift+y",
+        "title": "Current Pull Request",
         "action": {
           "kind": "openPopover",
           "popover": "pr-info"
+        }
+      },
+      {
+        "id": "open-prs",
+        "title": "Pull Requests",
+        "action": {
+          "kind": "openTab",
+          "tabType": "pull-requests"
         }
       }
     ],
