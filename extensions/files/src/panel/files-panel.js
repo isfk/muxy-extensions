@@ -484,7 +484,10 @@ export class FilesPanelApp {
       }
     }
     const ordered = Array.from(dirs).sort((a, b) => a.length - b.length);
-    for (const dir of ordered) await this.ensureLoaded(dir);
+    for (const dir of ordered) {
+      await this.ensureLoaded(dir);
+      this.expandedDirs.add(dir);
+    }
   }
 
   isVisibleInFilter(path, directory) {
@@ -561,7 +564,7 @@ export class FilesPanelApp {
     const entry = this.entries.get(path);
     if (!entry) return;
     const directory = entry.kind === "directory";
-    const expanded = directory && (this.dirtyFilter || this.expandedDirs.has(path));
+    const expanded = directory && this.expandedDirs.has(path);
     const renaming = this.renameState?.path === path;
     const gitStatus = this.gitStatus.statusFor(path, directory);
     const selected = this.selectedPaths.has(path);
@@ -571,7 +574,6 @@ export class FilesPanelApp {
         class: cls(
           "file-tree-row",
           selected && "file-tree-row-selected",
-          this.selectedPath === path && "file-tree-row-active",
           entry.isIgnored && "file-tree-row-ignored",
           gitStatus && GIT_STATUS_CLASS[gitStatus],
           gitStatus && directory && "file-tree-row-git-folder",
@@ -852,12 +854,9 @@ export class FilesPanelApp {
         selEl.setAttribute("aria-selected", "true");
       }
     }
-    const prevActive = this.selectedPath ? this.rowElements.get(this.selectedPath) : null;
-    if (prevActive) prevActive.classList.remove("file-tree-row-active");
     this.selectedPaths = next;
     this.selectedPath = path;
     const el = this.rowElements.get(path);
-    el.classList.add("file-tree-row-active");
     if (reveal) el.scrollIntoView({ block: "nearest" });
     this.syncActiveDescendant();
     this.persistMemory();
@@ -970,7 +969,7 @@ export class FilesPanelApp {
     const path = paths[idx];
     const entry = this.entries.get(path);
     if (!entry || entry.kind !== "directory") return;
-    const expanded = this.dirtyFilter || this.expandedDirs.has(path);
+    const expanded = this.expandedDirs.has(path);
     if (!expanded) {
       this.setSelection(path);
       void this.toggleDirectory(path);
@@ -989,8 +988,8 @@ export class FilesPanelApp {
     }
     const path = paths[idx];
     const entry = this.entries.get(path);
-    const expanded = entry?.kind === "directory" && (this.dirtyFilter || this.expandedDirs.has(path));
-    if (expanded && !this.dirtyFilter) {
+    const expanded = entry?.kind === "directory" && this.expandedDirs.has(path);
+    if (expanded) {
       this.setSelection(path);
       void this.toggleDirectory(path);
       return;
